@@ -8,6 +8,16 @@ from . import util
 class searchForm(forms.Form):
     q = forms.CharField()
 
+class NewEntryForm(forms.Form):
+    title = forms.CharField(label= "Title", widget= forms.TextInput(attrs={
+        'class' : 'form-control',
+        'style' : 'width: 200px',
+    }))
+    md_content = forms.CharField( label="Markdown Content", widget= forms.Textarea(attrs={
+        'class':'form-control',
+        'style':'width: 800px; margin-bottom:20px;',
+    }))
+
 def index(request):
     return render(request, "encyclopedia/index.html", {
         "entries": util.list_entries(),
@@ -50,3 +60,31 @@ def search_results(request):
                 "entries": matched_entries,
             })
 
+def new_entry(request):
+    if request.method == "GET":
+        return render(request, "encyclopedia/new_entry.html", {
+            "form" : NewEntryForm()
+        })
+    elif request.method == "POST":
+        #populate the form
+        form = NewEntryForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            md_content = form.cleaned_data["md_content"]
+            for entry in util.list_entries():
+                if title.lower() == entry.lower():
+                    return render(request, "encyclopedia/new_entry.html", {
+                        "form" : form,
+                        "error" : f"This title already exists"
+                    })
+
+            #we should save this file to desk now
+            title = title.replace(" ", "_")
+            util.save_entry(title, md_content)
+            #redirect the user to the entry page
+            url = reverse("entery", kwargs = {"title" : title})
+            return HttpResponseRedirect(url)
+        else:
+            return render(request, "encyclopedia/new_entry.html", {
+                "form" : form
+            })
