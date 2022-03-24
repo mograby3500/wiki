@@ -2,7 +2,7 @@
 Project 1 for CS50 web programming with pyhton and javascript
 
 # Overview
-Wikipedia-like online encyclopedia.
+  - Wikipedia-like online encyclopedia.
 
 # Specifications
 The website covers the following aspects:
@@ -26,6 +26,8 @@ The website covers the following aspects:
     Otherwise, the encyclopedia entry should be saved to disk, and the user should be taken to the new entry’s page.
 - ### Markdown to HTML Conversion: 
   - On each entry’s page, any Markdown content in the entry file is converted to HTML before being displayed to the user. This is done using the "markdown" python library
+- ### Random Page: 
+  - Clicking “Random Page” in the sidebar should take user to a random encyclopedia entry.
 
 
 # Topics
