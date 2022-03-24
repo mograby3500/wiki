@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django import forms
 from django.urls import reverse
 import markdown
+import random
 from . import util
 
 class searchForm(forms.Form):
@@ -29,17 +30,19 @@ def index(request):
     })
 
 def entery(request, title):
-    f = util.get_entry(title)
-    if f == None:
-        entery_html = "<h1>Not Found</h1>"
-    else:
-        entery_html = markdown.markdown(f)
+    if request.method == "GET":
+        f = util.get_entry(title)
+        if f == None:
+            entery_html = "<h1>Not Found</h1>"
+        else:
+            entery_html = markdown.markdown(f)
+        
+        return render(request, "encyclopedia/entery.html", {
+            "title" : title,
+            "entery" : entery_html,
+            "form": searchForm(),
+        })
     
-    return render(request, "encyclopedia/entery.html", {
-        "title" : title,
-        "entery" : entery_html,
-        "form": searchForm(),
-    })
 
 
 def search_results(request):
@@ -116,3 +119,9 @@ def edit_entry(request):
                 "title" : title,
                 "md_content" : util.get_entry(title),
             })
+
+
+def random_entry(request):
+    random_title = random.choice(util.list_entries())
+    url = reverse("entery", kwargs = {"title" : random_title})
+    return HttpResponseRedirect(url)
