@@ -4,11 +4,17 @@
 {% endblock %}
 
 {% block body %}
-    <!-- I need to view the md file here, how to do this ? -->
+    
     {% if entery == NONE %}
         <h1>The page doesn't exist</h1>
     {% else %}    
         {{ entery | safe}}
+        <form action="{% url 'edit_entry' %}" method="post">
+            {% csrf_token %}
+
+            <input name="title" value="{{ title }}" hidden>
+            <input class="btn btn-success" type="submit" value="Edit">
+        </form>
     {% endif%}
 
 {% endblock %}
